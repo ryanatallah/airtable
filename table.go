@@ -70,7 +70,7 @@ func (t *Table) AddRecords(records *Records) (*Records, error) {
 // UpdateRecords full update records
 func (t *Table) UpdateRecords(records *Records) (*Records, error) {
 	response := new(Records)
-	err := t.client.post(t.dbName, t.tableName, records, response)
+	err := t.client.put(t.dbName, t.tableName, records, response)
 	if err != nil {
 		return nil, err
 	}

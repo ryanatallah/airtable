@@ -128,6 +128,22 @@ func (at *Client) delete(db, table string, recordIDs []string, target interface{
 	return nil
 }
 
+func (at *Client) put(db, table, data, response interface{}) error {
+	at.rateLimit()
+	url := fmt.Sprintf("%s/%s/%s", at.baseURL, db, table)
+	body, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("cannot marshal body: %w", err)
+	}
+	req, err := http.NewRequest("PUT", url, bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("cannot create request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", at.apiKey))
+	return at.do(req, response)
+}
+
 func (at *Client) patch(db, table, data, response interface{}) error {
 	at.rateLimit()
 	url := fmt.Sprintf("%s/%s/%s", at.baseURL, db, table)
